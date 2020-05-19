@@ -1,5 +1,5 @@
 <template>
-  <div class="text-gray-600 m-auto">
+  <div class="text-gray-600 m-auto cursor-pointer" @click="toggleDropdown">
     {{ state.formatedValue }}
   </div>
   <button
@@ -58,9 +58,15 @@
       Especificar
       <input
         v-if="state.dropdownOption === 'custom'"
-        type="date"
+        type="text"
         class="appearance-none block w-full bg-gray-800 text-gray-500 rounded border border-gray-700 py-2 px-2 mt-1 leading-tight focus:outline-none focus:bg-gray-900"
-        @input="updateValue"
+        :class="{
+          'border-red-700 placeholder-red-700': state.customDateHasError,
+        }"
+        v-model="state.customDate"
+        @blur="updateValue"
+        @keypress="maskDate"
+        placeholder="DD/MM/AAAA"
       />
     </div>
   </div>
@@ -68,6 +74,9 @@
 
 <script>
 import { reactive, computed } from 'vue'
+import { format, addDays, parse, isValid } from 'date-fns'
+import ptBR from 'date-fns/locale/pt-BR'
+
 export default {
   props: {
     value: {
@@ -79,36 +88,63 @@ export default {
     const state = reactive({
       showDropdown: false,
       dropdownOption: 'today',
-      formatedValue: computed(() => props.value.toLocaleDateString()),
+      customDate: '',
+      customDateHasError: false,
+      formatedValue: computed(() =>
+        format(props.value, 'dd/MM/yyyy', { locale: ptBR })
+      ),
     })
 
     function toggleDropdown() {
       state.showDropdown = !state.showDropdown
     }
 
-    function updateValue(event) {
-      const addDays = function (days) {
-        var date = new Date()
-        date.setDate(date.getDate() + days)
-        return date
-      }
+    function maskDate(event) {
+      const len = event.target.value.length
+      if (len > 9 || !/\d/.test(event.key)) {
+        return event.preventDefault()
+      } else {
+        if (len === 2 || len === 5) event.target.value += '/'
+        if (len === 9) {
+          const val = event.target.value + event.key
 
+          const d = parse(val, 'dd/MM/yyyy', new Date(), {
+            locale: ptBR,
+          })
+
+          if (isValid(d)) {
+            state.customDateHasError = false
+          } else {
+            state.customDateHasError = true
+            return event.preventDefault()
+          }
+        }
+      }
+    }
+
+    function updateValue(event) {
       if (event === 'today') {
         state.dropdownOption = event
         context.emit('update', new Date())
       } else if (event === 'tomorrow') {
         state.dropdownOption = event
 
-        context.emit('update', addDays(1))
+        context.emit('update', addDays(new Date(), 1))
       } else if (event === 'nextWeek') {
         state.dropdownOption = event
-        context.emit('update', addDays(7))
+        context.emit('update', addDays(new Date(), 7))
       } else {
-        context.emit('update', event.target.valueAsDate)
+        if (state.customDateHasError) return
+        const d = parse(event.target.value, 'dd/MM/yyyy', new Date(), {
+          locale: ptBR,
+        })
+        context.emit('update', d)
       }
+
+      toggleDropdown()
     }
 
-    return { state, toggleDropdown, updateValue }
+    return { state, toggleDropdown, updateValue, maskDate }
   },
 }
 </script>

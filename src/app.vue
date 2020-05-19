@@ -22,6 +22,7 @@ export default {
 
     function addTask(task) {
       task.id = state.tasks.length + 1
+      task.createdDate = new Date()
       state.tasks.push({ ...task })
     }
 
