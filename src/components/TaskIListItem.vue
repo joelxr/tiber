@@ -7,7 +7,7 @@
       <p class="text-lg font-bold">{{ task.description }}</p>
       <div class="flex">
         <p class="px-1 text-sm text-blue-600">
-          {{ state.remaining }}, desde {{ state.createdAt }}
+          {{ state.remaining }}, {{ state.createdAt }}
         </p>
       </div>
     </div>
@@ -17,7 +17,11 @@
 
 <script>
 import { reactive, computed } from 'vue'
-import { format, formatDistanceStrict } from 'date-fns'
+import {
+  format,
+  formatDistanceStrict,
+  differenceInCalendarDays,
+} from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 import TaskListItemRemoveButton from './TaskListItemRemoveButton.vue'
 
@@ -31,20 +35,28 @@ export default {
   },
   setup(props) {
     const state = reactive({
-      createdAt: computed(() =>
-        format(props.task.createdDate, 'dd/MM', { locale: ptBR })
+      createdAt: computed(
+        () =>
+          `criado em ${format(props.task.createdDate, 'dd/MM', {
+            locale: ptBR,
+          })}`
       ),
       remaining: computed(() => {
-        const remainigDays = formatDistanceStrict(
-          props.task.createdDate,
-          props.task.dueDate,
-          {
+        const diff = differenceInCalendarDays(props.task.dueDate, new Date())
+        let remainigDays = ''
+
+        if (diff === 0) remainigDays = 'hoje'
+        else if (diff === 1) remainigDays = 'amanhã'
+        else if (diff === -1) remainigDays = 'ontem'
+        else
+          remainigDays = formatDistanceStrict(props.task.dueDate, new Date(), {
+            addSuffix: true,
             unit: 'day',
             roundingMethod: 'floor',
             locale: ptBR,
-          }
-        )
-        return `${remainigDays}`
+          })
+
+        return `${diff < 0 ? 'expirou' : 'expira'} ${remainigDays}`
       }),
     })
 
