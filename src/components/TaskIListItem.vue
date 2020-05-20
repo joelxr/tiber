@@ -1,17 +1,42 @@
 <template>
   <div
-    class="flex bg-gray-800 rounded shadow mx-4 my-2 p-2 border border-transparent hover:border-gray-700"
+    class="flex items-center bg-gray-800 rounded shadow mx-4 my-2 p-2 border border-transparent hover:border-gray-700"
   >
-    <input class="mx-2" type="checkbox" />
+    <input class="mx-2" type="checkbox" @click="$emit('done')" />
     <div class="mx-2 flex-grow">
-      <p class="text-lg font-bold">{{ task.description }}</p>
+      <p
+        class="text-lg font-bold"
+        :class="{ 'line-through font-normal text-gray-600': task.isDone }"
+      >
+        {{ task.description }}
+      </p>
+
       <div class="flex">
         <p class="px-1 text-sm text-blue-600">
           {{ state.remaining }}, {{ state.createdAt }}
         </p>
       </div>
     </div>
-    <TaskListItemRemoveButton @click="$emit('remove')" />
+
+    <p class="mt-1 mx-4" v-if="task.items.length">
+      {{ task.items.filter((i) => i.isDone).length }} / {{ task.items.length }}
+    </p>
+
+    <button
+      type="button"
+      class="text-gray-500 hover:text-blue-500"
+      @click="$emit('edit')"
+    >
+      <Icon name="pencil" />
+    </button>
+
+    <button
+      type="button"
+      class="text-gray-500 hover:text-red-500"
+      @click="$emit('remove')"
+    >
+      <Icon name="trash" />
+    </button>
   </div>
 </template>
 
@@ -23,10 +48,10 @@ import {
   differenceInCalendarDays,
 } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
-import TaskListItemRemoveButton from './TaskListItemRemoveButton.vue'
+import Icon from './Icon.vue'
 
 export default {
-  components: { TaskListItemRemoveButton },
+  components: { Icon },
   props: {
     task: {
       type: Object,

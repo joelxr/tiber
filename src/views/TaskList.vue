@@ -1,9 +1,14 @@
 <template>
-  <div class="flex flex-col p-2 h-full">
+  <div class="flex flex-col p-2 h-full w-full">
     <h1 class="text-gray-600 text-4xl font-black mx-4 my-8">{{ listName }}</h1>
     <ul class="flex flex-col flex-auto overflow-auto mb-20">
       <li v-for="(task, index) in tasks" :key="index">
-        <TaskListItem :task="task" @remove="$emit('remove', task)" />
+        <TaskListItem
+          :task="task"
+          @remove="$emit('remove', task)"
+          @done="$emit('done', task)"
+          @edit="$emit('edit', task)"
+        />
       </li>
     </ul>
   </div>

@@ -1,73 +1,61 @@
 <template>
-  <div class="flex text-gray-500 hover:text-blue-500 m-auto cursor-pointer">
-    <div @click="toggleDropdown">
-      {{ state.formatedValue }}
-    </div>
-    <button type="button" @click="toggleDropdown">
-      <div class="pointer-events-none flex items-center px-4">
-        <svg class="fill-current h-6 w-6" viewBox="0 0 24 24">
-          <g>
-            <g>
-              <path
-                d="M21,3h-3V1h-2v6h2V5h3v15H3V5h2V3H3C1.896,3,1,3.896,1,5v15c0,1.104,0.896,2,2,2h18c1.104,0,2-0.896,2-2V5 C23,3.896,22.104,3,21,3z"
-              />
-              <polygon points="8,5 15,5 15,3 8,3 8,1 6,1 6,7 8,7" />
-              <rect x="5" y="9" width="4" height="4" />
-              <rect x="10" y="9" width="4" height="4" />
-              <rect x="15" y="9" width="4" height="4" />
-              <rect x="5" y="14" width="4" height="4" />
-              <rect x="10" y="14" width="4" height="4" />
-            </g>
-          </g>
-        </svg>
+  <div class="relative">
+    <div
+      class="flex items-center h-full text-gray-500 hover:text-blue-500 m-auto cursor-pointer"
+    >
+      <div @click="toggleDropdown">
+        {{ state.formatedValue }}
       </div>
-    </button>
-  </div>
-  <div
-    v-if="state.showDropdown"
-    class="absolute right-0 bottom-0 mr-2 mb-16 py-2 w-48 bg-gray-800 shadow rounded"
-  >
-    <div
-      class="dropDownItem"
-      :class="{ selected: state.dropdownOption === 'today' }"
-      @click="updateValue('today')"
-    >
-      Hoje
+      <button type="button" @click="toggleDropdown">
+        <Icon name="calendar" />
+      </button>
     </div>
     <div
-      class="dropDownItem"
-      :class="{ selected: state.dropdownOption === 'tomorrow' }"
-      @click="updateValue('tomorrow')"
+      v-if="state.showDropdown"
+      class="absolute bottom-0 right-0 mr-2 mb-16 py-2 w-48 bg-gray-800 shadow rounded"
     >
-      Amanhã
-    </div>
-    <div
-      class="dropDownItem"
-      :class="{ selected: state.dropdownOption === 'nextWeek' }"
-      @click="updateValue('nextWeek')"
-    >
-      Próxima semana
-    </div>
-    <div
-      class="dropDownItem"
-      :class="{
-        selected: state.dropdownOption === 'custom',
-      }"
-      @click="state.dropdownOption = 'custom'"
-    >
-      Especificar
-      <input
-        v-if="state.dropdownOption === 'custom'"
-        type="text"
-        class="appearance-none block w-full bg-gray-800 text-gray-500 rounded border border-gray-700 py-2 px-4 mt-2 leading-tight focus:outline-none focus:bg-gray-900"
+      <div
+        class="dropDownItem"
+        :class="{ selected: state.dropdownOption === 'today' }"
+        @click="updateValue('today')"
+      >
+        Hoje
+      </div>
+      <div
+        class="dropDownItem"
+        :class="{ selected: state.dropdownOption === 'tomorrow' }"
+        @click="updateValue('tomorrow')"
+      >
+        Amanhã
+      </div>
+      <div
+        class="dropDownItem"
+        :class="{ selected: state.dropdownOption === 'nextWeek' }"
+        @click="updateValue('nextWeek')"
+      >
+        Próxima semana
+      </div>
+      <div
+        class="dropDownItem"
         :class="{
-          'border-red-700 placeholder-red-700': state.customDateHasError,
+          selected: state.dropdownOption === 'custom',
         }"
-        v-model="state.customDate"
-        @blur="updateValue"
-        @keypress="maskDate"
-        placeholder="DD/MM/AAAA"
-      />
+        @click="state.dropdownOption = 'custom'"
+      >
+        Especificar
+        <input
+          v-if="state.dropdownOption === 'custom'"
+          type="text"
+          class="appearance-none block w-full bg-gray-800 text-gray-500 rounded border border-gray-700 py-2 px-4 mt-2 leading-tight focus:outline-none focus:bg-gray-900"
+          :class="{
+            'border-red-700 placeholder-red-700': state.customDateHasError,
+          }"
+          v-model="state.customDate"
+          @blur="updateValue"
+          @keypress="maskDate"
+          placeholder="DD/MM/AAAA"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -76,8 +64,12 @@
 import { reactive, computed } from 'vue'
 import { format, addDays, parse, isValid } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
+import Icon from './Icon.vue'
 
 export default {
+  components: {
+    Icon,
+  },
   props: {
     value: {
       type: Date,

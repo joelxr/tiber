@@ -1,33 +1,36 @@
 <template>
-  <div class="absolute inset-x-0 bottom-0">
-    <div class="w-full flex bg-gray-800 border border-transparent">
-      <TaskFormAddButton
-        :disabled="!state.task.description"
-        @click.prevent="newTask"
-      />
-      <input
-        type="text"
-        class="block appearance-none w-full box-shadow leading-tight bg-gray-800 text-xl focus:outline-none focus:border-blue-900 px-2 py-4"
-        placeholder="Nova tarefa"
-        v-model="state.task.description"
-        @keyup.enter.prevent="newTask"
-        @keyup.esc="state.task.description = ''"
-      />
-      <TaskFormCalendarInput
-        :value="state.task.dueDate"
-        @update="updateDueDate"
-      />
-    </div>
+  <div class="w-full flex bg-gray-800 border border-transparent">
+    <button
+      type="button"
+      class="btn"
+      :disabled="!state.task.description"
+      @click.prevent="newTask"
+    >
+      <Icon name="plus-circle" />
+    </button>
+
+    <input
+      type="text"
+      class="block appearance-none w-full box-shadow leading-tight bg-gray-800 text-xl focus:outline-none focus:border-blue-900 px-2 py-4"
+      placeholder="Nova tarefa"
+      v-model="state.task.description"
+      @keyup.enter.prevent="newTask"
+      @keyup.esc="state.task.description = ''"
+    />
+    <TaskFormCalendarInput
+      :value="state.task.dueDate"
+      @update="updateDueDate"
+    />
   </div>
 </template>
 
 <script>
-import TaskFormAddButton from './TaskFormAddButton.vue'
+import Icon from './Icon.vue'
 import TaskFormCalendarInput from './TaskFormCalendarInput.vue'
 import { reactive } from 'vue'
 export default {
   components: {
-    TaskFormAddButton,
+    Icon,
     TaskFormCalendarInput,
   },
   setup(props, context) {
@@ -55,3 +58,17 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.btn {
+  @apply text-gray-500;
+
+  &:hover {
+    @apply text-green-500;
+  }
+
+  &:disabled {
+    @apply text-gray-700;
+  }
+}
+</style>
