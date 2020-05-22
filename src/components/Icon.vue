@@ -1,10 +1,16 @@
 <template>
-  <div
-    v-if="name === 'trash'"
-    class="pointer-events-none flex items-center px-4"
-  >
-    <svg class="fill-current h-6 w-6" viewBox="0 0 24 24">
-      <g>
+  <div class="pointer-events-none flex items-center px-4">
+    <svg
+      class="fill-current"
+      :class="{
+        xs: size === 'xs',
+        sm: size === 'sm',
+        md: size === 'md',
+        lg: size === 'lg',
+      }"
+      viewBox="0 0 24 24"
+    >
+      <g v-if="name === 'trash'">
         <path
           d="M5,20c0,1.103,0.897,2,2,2h10c1.103,0,2-0.897,2-2V8H5V20z M7,10h10l0.001,10H7V10z"
         />
@@ -12,14 +18,8 @@
         <rect x="9" y="12" width="2" height="6" />
         <rect x="13" y="12" width="2" height="6" />
       </g>
-    </svg>
-  </div>
-  <div
-    v-else-if="name === 'pencil'"
-    class="pointer-events-none flex items-center px-2"
-  >
-    <svg class="fill-current h-6 w-6" viewBox="0 0 24 24">
-      <g>
+
+      <g v-else-if="name === 'pencil'">
         <path
           d="M20.821,3.18c-0.761-0.76-1.771-1.178-2.847-1.178c-1.074,0-2.086,0.418-2.846,1.179L3.72,14.59
 		c-0.128,0.128-0.22,0.289-0.263,0.464l-1.427,5.705c-0.084,0.34,0.016,0.702,0.264,0.948c0.247,0.249,0.608,0.349,0.949,0.264
@@ -29,14 +29,8 @@
 		c0.766-0.764,2.1-0.764,2.864,0l-0.002-0.001c0.765,0.765,0.765,2.099,0,2.864l-0.718,0.72L15.823,5.313z"
         />
       </g>
-    </svg>
-  </div>
-  <div
-    v-else-if="name === 'plus-circle'"
-    class="pointer-events-none flex items-center px-4"
-  >
-    <svg class="fill-current h-6 w-6" viewBox="0 0 24 24">
-      <g>
+
+      <g v-else-if="name === 'plus-circle'">
         <g>
           <path
             d="M12,2C6.486,2,2,6.486,2,12c0,5.515,4.486,10,10,10s10-4.485,10-10C22,6.486,17.514,2,12,2z M12,20
@@ -47,14 +41,8 @@
           />
         </g>
       </g>
-    </svg>
-  </div>
-  <div
-    v-else-if="name === 'calendar'"
-    class="pointer-events-none flex items-center px-4"
-  >
-    <svg class="fill-current h-6 w-6" viewBox="0 0 24 24">
-      <g>
+
+      <g v-else-if="name === 'calendar'">
         <g>
           <path
             d="M21,3h-3V1h-2v6h2V5h3v15H3V5h2V3H3C1.896,3,1,3.896,1,5v15c0,1.104,0.896,2,2,2h18c1.104,0,2-0.896,2-2V5 C23,3.896,22.104,3,21,3z"
@@ -67,15 +55,8 @@
           <rect x="10" y="14" width="4" height="4" />
         </g>
       </g>
-    </svg>
-  </div>
 
-  <div
-    v-else-if="name === 'times'"
-    class="pointer-events-none flex items-center px-4"
-  >
-    <svg class="fill-current h-6 w-6" viewBox="0 0 24 24">
-      <g>
+      <g v-else-if="name === 'times'">
         <polygon
           points="20.707,4.707 19.293,3.293 12,10.586 4.707,3.293 3.293,4.707 10.586,12 3.293,19.293 
 		4.707,20.707 12,13.414 19.293,20.707 20.707,19.293 13.414,12 	"
@@ -92,6 +73,25 @@ export default {
       type: String,
       required: true,
     },
+    size: {
+      type: String,
+      default: 'md',
+    },
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.xs {
+  @apply h-4 w-4;
+}
+.sm {
+  @apply h-5 w-5;
+}
+.md {
+  @apply h-6 w-6;
+}
+.lg {
+  @apply h-8 w-8;
+}
+</style>
