@@ -15,6 +15,7 @@
         v-if="state.selectedTask"
         :task="state.selectedTask"
         @close="state.selectedTask = null"
+        @removeItem="removeTaskItem"
       />
     </div>
   </div>
@@ -43,7 +44,7 @@ export default {
       task.createdDate = new Date()
       task.doneDate = null
       task.isDone = false
-      task.items = [{ description: 'step 1' }]
+      task.items = []
       state.tasks.push({ ...task })
     }
 
@@ -61,12 +62,18 @@ export default {
       task.doneDate = task.isDone ? new Date() : null
     }
 
+    function removeTaskItem(event) {
+      const index = event.task.items.indexOf(event.removedItem)
+      event.task.items.splice(index, 1)
+    }
+
     return {
       state,
       addTask,
       removeTask,
       editTask,
       doneTask,
+      removeTaskItem
     }
   },
 }

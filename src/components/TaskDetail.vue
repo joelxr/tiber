@@ -2,12 +2,12 @@
   <div class="relative shadow flex-auto bg-gray-800">
     <input
       type="text"
-      class="block appearance-none leading-tight bg-gray-800 text-3xl font-semibold focus:outline-none mt-2 px-4 py-2"
+      class="block appearance-none leading-tight bg-gray-800 text-3xl font-semibold focus:outline-none mt-2 px-4 py-2 my-2"
       v-model="task.description"
     />
 
     <div v-for="(item, index) in task.items" :key="index" class="flex">
-      <TaskDetailItem :item="item" />
+      <TaskDetailItem :item="item" @remove="removeItem"/>
     </div>
 
     <TaskDetailAddItemInput
@@ -38,6 +38,14 @@ export default {
       required: true,
     },
   },
+  setup(props, context) {
+    function removeItem(event) {
+      context.emit("removeItem", {task: props.task, removedItem: event})
+    }
+    return {
+      removeItem
+    }  
+  }
 }
 </script>
 
