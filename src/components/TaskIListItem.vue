@@ -25,15 +25,28 @@
     <button
       type="button"
       class="text-gray-500 hover:text-blue-500"
-      @click="$emit('edit')"
+      :class="{ 'text-blue-500': isNotesOpened }"
+      @click="$emit('openNotes', task)"
+      title="Anotações"
     >
-      <Icon name="pencil" />
+      <Icon name="file" />
+    </button>
+
+    <button
+      type="button"
+      class="text-gray-500 hover:text-blue-500"
+      :class="{ 'text-blue-500': !!isDetailOpened }"
+      @click="$emit('edit', task)"
+      title="Especificar"
+    >
+      <Icon name="checklist" />
     </button>
 
     <button
       type="button"
       class="text-gray-500 hover:text-red-500"
       @click="$emit('remove')"
+      title="Excluir"
     >
       <Icon name="trash" />
     </button>
@@ -56,6 +69,14 @@ export default {
     task: {
       type: Object,
       required: true,
+    },
+    isNotesOpened: {
+      type: Boolean,
+      default: false,
+    },
+    isDetailOpened: {
+      type: Boolean,
+      default: false,
     },
   },
   setup(props) {

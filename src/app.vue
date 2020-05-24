@@ -1,50 +1,67 @@
 <template>
   <div class="w-screen h-screen">
     <div class="flex h-full">
-      <div class="flex flex-col w-full">
+      <div
+        class="flex flex-col left"
+        :class="{ full: !state.selectedTask && !state.taskToOpenNotes }"
+      >
         <TaskList
           list-name="Para hoje"
           :tasks="state.tasks"
           @remove="removeTask"
           @done="doneTask"
           @edit="editTask"
+          @openNotes="openNotes"
         />
         <TaskForm @new="addTask" />
       </div>
       <TaskDetail
+        class="right"
         v-if="state.selectedTask"
         :task="state.selectedTask"
         @close="state.selectedTask = null"
         @removeItem="removeTaskItem"
+      />
+      <TaskNotes
+        class="right"
+        v-if="state.taskToOpenNotes"
+        :task="state.taskToOpenNotes"
+        @close="state.taskToOpenNotes = null"
       />
     </div>
   </div>
 </template>
 
 <script>
+import { reactive } from 'vue'
+import { v4 as uuidv4 } from 'uuid'
+
 import TaskList from './views/TaskList.vue'
 import TaskForm from './components/TaskForm.vue'
 import TaskDetail from './components/TaskDetail.vue'
-import { reactive } from 'vue'
+import TaskNotes from './components/TaskNotes.vue'
 
 export default {
   components: {
     TaskList,
     TaskDetail,
     TaskForm,
+    TaskNotes,
   },
   setup() {
     const state = reactive({
       tasks: [],
       selectedTask: null,
+      taskToOpenNotes: null,
     })
 
     function addTask(task) {
-      task.id = state.tasks.length + 1
+      task.id = uuidv4()
       task.createdDate = new Date()
       task.doneDate = null
       task.isDone = false
       task.items = []
+      task.note = ''
       state.tasks.push({ ...task })
     }
 
@@ -54,7 +71,13 @@ export default {
     }
 
     function editTask(task) {
+      state.taskToOpenNotes = null
       state.selectedTask = task
+    }
+
+    function openNotes(task) {
+      state.taskToOpenNotes = task
+      state.selectedTask = null
     }
 
     function doneTask(task) {
@@ -63,7 +86,9 @@ export default {
     }
 
     function removeTaskItem(event) {
-      const index = event.task.items.indexOf(event.removedItem)
+      const index = event.task.items.findIndex(
+        (i) => event.removedItem.id === i.id
+      )
       event.task.items.splice(index, 1)
     }
 
@@ -72,9 +97,24 @@ export default {
       addTask,
       removeTask,
       editTask,
+      openNotes,
       doneTask,
-      removeTaskItem
+      removeTaskItem,
     }
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.left {
+  min-width: 55%;
+
+  &.full {
+    min-width: 100%;
+  }
+}
+
+.right {
+  max-width: 45%;
+}
+</style>

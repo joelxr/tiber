@@ -3,7 +3,7 @@
     <input type="checkbox" class="mr-4" v-model="item.isDone" />
     <input
       type="text"
-      class="block appearance-none leading-tight bg-gray-800 focus:outline-none w-full"
+      class="block appearance-none leading-tight bg-gray-900 focus:outline-none w-full"
       v-model="item.description"
     />
     <button

@@ -19,7 +19,7 @@
     </button>
     <input
       type="text"
-      class="block appearance-none leading-tight p-2 bg-gray-800 text-green-500 placeholder-green-500 focus:outline-none"
+      class="block appearance-none leading-tight p-2 bg-gray-900 text-green-500 placeholder-green-500 focus:outline-none"
       placeholder="Adicionar item"
       @keypress.enter="newItem"
     />
