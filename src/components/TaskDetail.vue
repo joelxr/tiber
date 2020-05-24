@@ -9,23 +9,36 @@
     </template>
 
     <template #content>
-      <div v-for="(item, index) in task.items" :key="index" class="flex">
-        <TaskDetailItem :item="item" @remove="removeItem" />
+      <div class="my-2">
+        <DateInput :value="task.dueDate" @update="task.dueDate = $event" />
       </div>
 
-      <TaskDetailAddItemInput class="mt-1 ml-3" @new="newItem" />
+      <div class="my-2 mx-2">
+        <p class="text-xl">Etapas</p>
+        <div v-for="(item, index) in task.items" :key="index" class="flex">
+          <TaskDetailItem :item="item" @remove="removeItem" />
+        </div>
+
+        <TaskDetailAddItemInput class="mt-1 ml-3" @new="newItem" />
+      </div>
     </template>
   </LeftSidePanel>
 </template>
 
 <script>
 import { v4 as uuidv4 } from 'uuid'
+import LeftSidePanel from './LeftSidePanel.vue'
 import TaskDetailItem from './TaskDetailItem.vue'
 import TaskDetailAddItemInput from './TaskDetailAddItemInput.vue'
-import LeftSidePanel from './LeftSidePanel.vue'
+import DateInput from './DateInput.vue'
 
 export default {
-  components: { TaskDetailItem, TaskDetailAddItemInput, LeftSidePanel },
+  components: {
+    DateInput,
+    LeftSidePanel,
+    TaskDetailItem,
+    TaskDetailAddItemInput,
+  },
   props: {
     task: {
       type: Object,

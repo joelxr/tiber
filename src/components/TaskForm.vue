@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex bg-gray-800 border border-transparent">
+  <div class="w-full pr-4 flex bg-gray-800 border border-transparent">
     <button
       type="button"
       class="btn"
@@ -11,27 +11,24 @@
 
     <input
       type="text"
-      class="block appearance-none w-full box-shadow leading-tight bg-gray-800 text-xl focus:outline-none focus:border-blue-900 px-2 py-4"
+      class="block appearance-none w-full box-shadow leading-tight bg-gray-800 text-xl focus:outline-none focus:border-blue-900 py-4"
       placeholder="Nova tarefa"
       v-model="state.task.description"
       @keyup.enter.prevent="newTask"
       @keyup.esc="state.task.description = ''"
     />
-    <TaskFormCalendarInput
-      :value="state.task.dueDate"
-      @update="updateDueDate"
-    />
+    <DateInput :value="state.task.dueDate" @update="updateDueDate" />
   </div>
 </template>
 
 <script>
 import Icon from './Icon.vue'
-import TaskFormCalendarInput from './TaskFormCalendarInput.vue'
+import DateInput from './DateInput.vue'
 import { reactive } from 'vue'
 export default {
   components: {
     Icon,
-    TaskFormCalendarInput,
+    DateInput,
   },
   setup(props, context) {
     const state = reactive({

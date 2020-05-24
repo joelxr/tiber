@@ -1,18 +1,22 @@
 <template>
-  <div class="relative">
+  <div>
     <div
-      class="flex items-center h-full text-gray-500 hover:text-blue-500 m-auto cursor-pointer"
+      class="flex items-center h-full cursor-pointer"
+      @click="toggleDropdown"
     >
-      <div @click="toggleDropdown">
+      <div
+        ref="inputRef"
+        class="flex text-gray-500 hover:text-blue-500 select-none"
+      >
+        <Icon name="calendar" />
         {{ state.formatedValue }}
       </div>
-      <button type="button" @click="toggleDropdown">
-        <Icon name="calendar" />
-      </button>
     </div>
+
     <div
-      v-if="state.showDropdown"
-      class="absolute bottom-0 right-0 mr-2 mb-16 py-2 w-48 bg-gray-800 shadow rounded"
+      ref="dropdownRef"
+      v-show="isDropdownVisible"
+      class="py-2 w-48 bg-gray-800 shadow rounded"
     >
       <div
         class="dropDownItem"
@@ -48,9 +52,9 @@
           type="text"
           class="appearance-none block w-full bg-gray-800 text-gray-500 rounded border border-gray-700 py-2 px-4 mt-2 leading-tight focus:outline-none focus:bg-gray-900"
           :class="{
-            'border-red-700 placeholder-red-700': state.customDateHasError,
+            'border-red-700 placeholder-red-700': hasError,
           }"
-          v-model="state.customDate"
+          :value="customDate"
           @blur="updateValue"
           @keypress="maskDate"
           placeholder="DD/MM/AAAA"
@@ -61,12 +65,20 @@
 </template>
 
 <script>
-import { reactive, computed } from 'vue'
-import { format, addDays, parse, isValid } from 'date-fns'
+import { reactive, computed, onMounted, ref } from 'vue'
+import { format, addDays, parse } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
+import { createPopper } from '@popperjs/core'
+
 import Icon from './Icon.vue'
+import useDropdown from '../composables/useDropdown'
+import useDateInput from '../composables/useDateInput'
 
 export default {
+  model: {
+    prop: 'value',
+    event: 'update',
+  },
   components: {
     Icon,
   },
@@ -77,43 +89,18 @@ export default {
     },
   },
   setup(props, context) {
+    const dropdown = useDropdown()
+    const dateInput = useDateInput()
+    const inputRef = ref(null)
+    const dropdownRef = ref(null)
     const state = reactive({
-      showDropdown: false,
       dropdownOption: 'today',
-      customDate: '',
-      customDateHasError: false,
       formatedValue: computed(() =>
         format(props.value, 'dd/MM/yyyy', { locale: ptBR })
       ),
     })
 
-    function toggleDropdown() {
-      state.showDropdown = !state.showDropdown
-    }
-
-    function maskDate(event) {
-      const len = event.target.value.length
-
-      if (len > 9 || !/\d/.test(event.key)) {
-        return event.preventDefault()
-      } else {
-        if (len === 2 || len === 5) event.target.value += '/'
-        if (len === 9) {
-          const val = event.target.value + event.key
-
-          const d = parse(val, 'dd/MM/yyyy', new Date(), {
-            locale: ptBR,
-          })
-
-          if (isValid(d)) {
-            state.customDateHasError = false
-          } else {
-            state.customDateHasError = true
-            return event.preventDefault()
-          }
-        }
-      }
-    }
+    let popperInstance = null
 
     function updateValue(event) {
       if (event === 'today') {
@@ -127,18 +114,36 @@ export default {
         state.dropdownOption = event
         context.emit('update', addDays(new Date(), 7))
       } else {
-        if (!event.target.value || state.customDateHasError) return
+        if (!event.target.value || dateInput.hasError.value) return
         const d = parse(event.target.value, 'dd/MM/yyyy', new Date(), {
           locale: ptBR,
         })
         context.emit('update', d)
       }
 
-      state.customDate = ''
-      toggleDropdown()
+      dateInput.set('')
+      dropdown.toggle()
     }
 
-    return { state, toggleDropdown, updateValue, maskDate }
+    onMounted(() => {
+      popperInstance = createPopper(inputRef.value, dropdownRef.value, {})
+    })
+
+    return {
+      state,
+      updateValue,
+      toggleDropdown: () => {
+        dropdown.toggle()
+        popperInstance.update()
+      },
+      isDropdownVisible: dropdown.isVisible,
+      customDate: dateInput.value,
+      maskDate: dateInput.maskDate,
+      hasError: dateInput.hasError,
+      inputRef,
+      dropdownRef,
+      popperInstance,
+    }
   },
 }
 </script>
