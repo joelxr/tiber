@@ -9,11 +9,11 @@
     </template>
 
     <template #content>
-      <div class="my-2">
+      <div class="mb-2">
         <DateInput :value="task.dueDate" @update="task.dueDate = $event" />
       </div>
 
-      <div class="my-2 mx-2">
+      <div class="my-4 mx-4">
         <p class="text-xl">Etapas</p>
         <div v-for="(item, index) in task.items" :key="index" class="flex">
           <TaskDetailItem :item="item" @remove="removeItem" />
