@@ -9,8 +9,15 @@
     </template>
 
     <template #content>
-      <div class="ml-auto mr-4 mb-2">
+      <div class="flex justify-between mx-4 mb-2">
         <DateInput :value="task.dueDate" @update="task.dueDate = $event" />
+        <button
+          type="button"
+          class="flex text-gray-500 hover:text-red-500 mr-2"
+          @click="$emit('remove', item)"
+        >
+          <Icon name="trash" class="mr-2" /> Excluir tarefa
+        </button>
       </div>
 
       <div class="my-2 inline-flex flex-row">
@@ -31,7 +38,11 @@
             <TaskDetailItem :item="item" @remove="removeItem" />
           </div>
 
-          <TaskDetailAddItemInput class="mt-1 ml-3" @new="newItem" />
+          <AddItemInput
+            class="mt-1 ml-3"
+            @new="newItem"
+            placeholder="Próxima etapa"
+          />
         </div>
 
         <div
@@ -50,16 +61,18 @@ import { reactive } from 'vue'
 import { v4 as uuidv4 } from 'uuid'
 import LeftSidePanel from './LeftSidePanel.vue'
 import TaskDetailItem from './TaskDetailItem.vue'
-import TaskDetailAddItemInput from './TaskDetailAddItemInput.vue'
+import AddItemInput from './AddItemInput.vue'
 import TaskNotes from './TaskNotes.vue'
 import DateInput from './DateInput.vue'
+import Icon from './Icon.vue'
 
 export default {
   components: {
+    AddItemInput,
     DateInput,
+    Icon,
     LeftSidePanel,
     TaskDetailItem,
-    TaskDetailAddItemInput,
     TaskNotes,
   },
   props: {

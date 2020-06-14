@@ -1,6 +1,7 @@
 <template>
-  <div class="flex flex-col p-2 flex-grow overflow-auto">
-    <h1 class="text-gray-600 text-4xl font-black mx-4 my-8">{{ listName }}</h1>
+  <div
+    class="flex flex-col p-2 flex-grow overflow-auto mx-0 sm:mx-10 md:mx-12 lg:mx-16 xl:mx-32"
+  >
     <ul class="flex flex-col flex-grow overflow-auto">
       <li v-for="(task, index) in tasks" :key="index">
         <TaskListItem
@@ -23,10 +24,6 @@ import { reactive } from 'vue'
 export default {
   components: { TaskListItem },
   props: {
-    listName: {
-      type: String,
-      required: true,
-    },
     tasks: {
       type: Array,
       required: true,
