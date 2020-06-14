@@ -1,5 +1,7 @@
 <template>
-  <div class="flex flex-col flex-auto shadow-xl bg-gray-900">
+  <div
+    class="flex flex-col flex-auto shadow-xl bg-gray-900 fixed top-0 right-0 h-full px-2"
+  >
     <div class="flex items-center mb-4 border-b border-gray-800">
       <div class="flex-auto">
         <slot name="header" />

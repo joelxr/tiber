@@ -1,34 +1,21 @@
 <template>
-  <div class="w-screen h-screen">
-    <div class="flex h-full">
-      <div
-        class="flex flex-col left"
-        :class="{ full: !state.selectedTask && !state.taskToOpenNotes }"
-      >
-        <TaskList
-          list-name="Para hoje"
-          :tasks="state.tasks"
-          @remove="removeTask"
-          @done="doneTask"
-          @edit="editTask"
-          @openNotes="openNotes"
-        />
-        <TaskForm @new="addTask" />
-      </div>
-      <TaskDetail
-        class="right"
-        v-if="state.selectedTask"
-        :task="state.selectedTask"
-        @close="state.selectedTask = null"
-        @removeItem="removeTaskItem"
+  <div class="w-screen h-full flex">
+    <div class="flex flex-col h-full min-w-full">
+      <TaskList
+        list-name="Para hoje"
+        :tasks="state.tasks"
+        @remove="removeTask"
+        @done="doneTask"
+        @edit="editTask"
       />
-      <TaskNotes
-        class="right"
-        v-if="state.taskToOpenNotes"
-        :task="state.taskToOpenNotes"
-        @close="state.taskToOpenNotes = null"
-      />
+      <TaskForm @new="addTask" />
     </div>
+    <TaskDetail
+      v-if="state.selectedTask"
+      :task="state.selectedTask"
+      @close="state.selectedTask = null"
+      @removeItem="removeTaskItem"
+    />
   </div>
 </template>
 
@@ -39,20 +26,17 @@ import { v4 as uuidv4 } from 'uuid'
 import TaskList from './views/TaskList.vue'
 import TaskForm from './components/TaskForm.vue'
 import TaskDetail from './components/TaskDetail.vue'
-import TaskNotes from './components/TaskNotes.vue'
 
 export default {
   components: {
     TaskList,
     TaskDetail,
     TaskForm,
-    TaskNotes,
   },
   setup() {
     const state = reactive({
       tasks: [],
       selectedTask: null,
-      taskToOpenNotes: null,
     })
 
     function addTask(task) {
@@ -71,13 +55,7 @@ export default {
     }
 
     function editTask(task) {
-      state.taskToOpenNotes = null
       state.selectedTask = task
-    }
-
-    function openNotes(task) {
-      state.taskToOpenNotes = task
-      state.selectedTask = null
     }
 
     function doneTask(task) {
@@ -97,24 +75,9 @@ export default {
       addTask,
       removeTask,
       editTask,
-      openNotes,
       doneTask,
       removeTaskItem,
     }
   },
 }
 </script>
-
-<style lang="scss" scoped>
-.left {
-  min-width: 55%;
-
-  &.full {
-    min-width: 100%;
-  }
-}
-
-.right {
-  max-width: 45%;
-}
-</style>

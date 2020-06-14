@@ -2,22 +2,23 @@
   <div class="w-full pr-4 flex bg-gray-800 border border-transparent">
     <button
       type="button"
-      class="btn"
+      class="btn mx-2"
       :disabled="!state.task.description"
       @click.prevent="newTask"
     >
       <Icon name="plus-circle" />
     </button>
-
     <input
       type="text"
-      class="block appearance-none w-full box-shadow leading-tight bg-gray-800 text-xl focus:outline-none focus:border-blue-900 py-4"
+      class="flex-grow min-w-0 block appearance-none box-shadow leading-tight bg-gray-800 text-xl focus:outline-none focus:border-blue-900 my-auto mx-2 py-4"
       placeholder="Nova tarefa"
       v-model="state.task.description"
       @keyup.enter.prevent="newTask"
       @keyup.esc="state.task.description = ''"
     />
-    <DateInput :value="state.task.dueDate" @update="updateDueDate" />
+    <div class="my-auto">
+      <DateInput :value="state.task.dueDate" @update="updateDueDate" />
+    </div>
   </div>
 </template>
 
@@ -39,8 +40,10 @@ export default {
     })
 
     function newTask() {
-      context.emit('new', state.task)
-      state.task.description = ''
+      if (state.task.description) {
+        context.emit('new', state.task)
+        state.task.description = ''
+      }
     }
 
     function updateDueDate(event) {

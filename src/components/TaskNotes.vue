@@ -1,39 +1,28 @@
 <template>
-  <LeftSidePanel>
-    <template #header>
-      <h1 class="m-0 px-4 py-1 text-3xl font-semibold">
-        {{ task.description }}
-      </h1>
-    </template>
+  <div class="flex justify-end mx-2">
+    <ToggleInput
+      :value="state.edit"
+      @update="state.edit = $event.target.checked"
+      label="Editor markdown"
+    />
+  </div>
 
-    <template #actions>
-      <button
-        type="button"
-        class="text-gray-500 hover:text-blue-500"
-        @click="state.edit = !state.edit"
-      >
-        <Icon size="sm" :name="state.edit ? 'file' : 'pencil'" />
-      </button>
-    </template>
-    <template #content>
-      <textarea
-        v-if="state.edit"
-        class="w-full h-full m-0 py-1 px-4 bg-gray-900 font-mono focus:outline-none"
-        style="resize: none;"
-        v-model="task.note"
-        placeholder="Insira suas anotações aqui"
-        @keypress.ctrl.enter.exact="state.edit = false"
-      >
-      </textarea>
+  <textarea
+    v-if="state.edit"
+    class="w-full flex-grow m-0 py-1 px-4 bg-gray-900 font-mono focus:outline-none"
+    style="resize: none;"
+    v-model="task.note"
+    placeholder="Insira suas anotações aqui"
+    @keypress.ctrl.enter.exact="state.edit = false"
+  >
+  </textarea>
 
-      <div
-        v-else
-        class="markdown w-full h-full overflow-auto m-0 p-0 bg-gray-900"
-        v-html="state.noteTemplate"
-      >
-      </div>
-    </template>
-  </LeftSidePanel>
+  <div
+    v-else
+    class="markdown w-full h-full overflow-auto m-0 p-0 bg-gray-900"
+    v-html="state.noteTemplate"
+  >
+  </div>
 </template>
 
 <script>
@@ -42,20 +31,19 @@ import MarkdownIt from 'markdown-it'
 import markdownItEmoji from 'markdown-it-emoji'
 import markdownItContainer from 'markdown-it-container'
 import hljs from 'highlight.js'
-import Icon from './Icon.vue'
-import LeftSidePanel from './LeftSidePanel.vue'
+import ToggleInput from './ToggleInput.vue'
 
 import 'highlight.js/styles/tomorrow-night-eighties.css'
 
 export default {
-  components: { LeftSidePanel, Icon },
+  components: { ToggleInput },
   props: {
     task: {
       type: Object,
       required: true,
     },
   },
-  setup(props, context, a) {
+  setup(props, context) {
     const markdownIt = MarkdownIt({
       html: false,
       xhtmlOut: false,
@@ -72,9 +60,7 @@ export default {
               hljs.highlight(lang, str, true).value +
               '</code></pre>'
             )
-          } catch (err) {
-            console.log('highlight error')
-          }
+          } catch (err) {}
         }
 
         return (

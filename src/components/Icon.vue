@@ -1,5 +1,5 @@
 <template>
-  <div class="pointer-events-none flex items-center px-4">
+  <div class="pointer-events-none flex items-center">
     <svg
       class="fill-current"
       :class="{

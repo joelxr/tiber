@@ -2,6 +2,11 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+html,
+body {
+  height: 100%;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: theme('colors.gray.700') theme('colors.gray.900');
@@ -14,5 +19,5 @@
   @apply bg-gray-900;
 }
 *::-webkit-scrollbar-thumb {
-  @apply bg-gray-700 border border-gray-700;
+  @apply bg-gray-700 border border-gray-900;
 }

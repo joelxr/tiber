@@ -12,29 +12,22 @@
       </p>
 
       <div class="flex">
-        <p class="px-1 text-sm text-blue-600">
-          {{ state.remaining }}, {{ state.createdAt }}
+        <p class="text-sm text-blue-600">
+          {{ state.remaining }}
+          <span class="hidden sm:inline md:inline lg:inline">
+            , {{ state.createdAt }}
+          </span>
         </p>
       </div>
     </div>
 
-    <p class="mt-1 mx-4" v-if="task.items.length">
-      {{ task.items.filter((i) => i.isDone).length }} / {{ task.items.length }}
+    <p class="mt-1 mx-2" v-if="task.items.length">
+      {{ task.items.filter((i) => i.isDone).length }}/{{ task.items.length }}
     </p>
 
     <button
       type="button"
-      class="text-gray-500 hover:text-blue-500"
-      :class="{ 'text-blue-500': isNotesOpened }"
-      @click="$emit('openNotes', task)"
-      title="Anotações"
-    >
-      <Icon name="file" />
-    </button>
-
-    <button
-      type="button"
-      class="text-gray-500 hover:text-blue-500"
+      class="text-gray-500 hover:text-blue-500 mr-2"
       :class="{ 'text-blue-500': !!isDetailOpened }"
       @click="$emit('edit', task)"
       title="Especificar"
@@ -44,7 +37,7 @@
 
     <button
       type="button"
-      class="text-gray-500 hover:text-red-500"
+      class="text-gray-500 hover:text-red-500 mr-2"
       @click="$emit('remove')"
       title="Excluir"
     >
@@ -69,10 +62,6 @@ export default {
     task: {
       type: Object,
       required: true,
-    },
-    isNotesOpened: {
-      type: Boolean,
-      default: false,
     },
     isDetailOpened: {
       type: Boolean,

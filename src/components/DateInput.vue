@@ -8,7 +8,7 @@
         ref="inputRef"
         class="flex text-gray-500 hover:text-blue-500 select-none"
       >
-        <Icon name="calendar" />
+        <Icon name="calendar" class="mr-2" />
         {{ state.formatedValue }}
       </div>
     </div>
@@ -17,6 +17,7 @@
       ref="dropdownRef"
       v-show="isDropdownVisible"
       class="py-2 w-48 bg-gray-800 shadow rounded"
+      style="z-index: 1000;"
     >
       <div
         class="dropDownItem"
