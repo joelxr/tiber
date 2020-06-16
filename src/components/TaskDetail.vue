@@ -16,7 +16,7 @@
           class="flex text-gray-500 hover:text-red-500 mr-2"
           @click="$emit('remove', item)"
         >
-          <Icon name="trash" class="mr-2" /> Excluir tarefa
+          <Icon name="trash" class="mr-2" /> EXCLUIR
         </button>
       </div>
 

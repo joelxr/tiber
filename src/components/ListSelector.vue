@@ -1,11 +1,12 @@
 <template>
   <div
-    class="flex px-2 sm:mx-10 md:mx-12 lg:mx-16 xl:mx-32"
+    ref="inputRef"
+    class="flex px-2 sm:mx-10 md:mx-12 lg:mx-16 xl:mx-32 text-gray-600 hover:text-blue-600 cursor-pointer"
     @click="toggleDropdown"
   >
+    <Icon name="notes" />
     <input
-      ref="inputRef"
-      class="bg-gray-900 text-gray-600 text-3xl font-black mx-4 py-2 hover:text-blue-600 cursor-pointer"
+      class="flex-grow-1 bg-gray-900 text-gray-600 hover:text-blue-600 text-3xl font-black mx-4 py-2"
       :value="selectedList.name"
       @input="selectedList.name = $event.target.value"
       @click="isDropdownVisible = !isDropdownVisible"
@@ -13,37 +14,43 @@
   </div>
   <div
     ref="dropdownRef"
-    class="m-4 w-48 bg-gray-900 shadow-md rounded"
+    class="m-4 bg-gray-800 shadow-md rounded"
+    style="max-width: 36rem;"
     v-show="isDropdownVisible"
   >
-    <div
-      v-for="(list, index) in lists"
-      :key="index"
-      class="flex justify-between p-2"
-    >
-      <div class="text-lg mx-2">
-        <div
-          class="cursor-pointer hover:text-blue-500"
-          @click="selectList(list)"
-        >
-          {{ list.name }}
-        </div>
-
-        <div class="text-sm text-gray-600">
-          {{
-            `${list.tasks.filter((t) => t.isDone).length}/${list.tasks.length}`
-          }}
-        </div>
-      </div>
-      <button
-        class="flex cursor-pointer hover:text-red-500"
-        @click="$emit('remove', list)"
+    <div style="max-height: 400px; overflow: auto;">
+      <div
+        v-for="(list, index) in lists"
+        :key="index"
+        class="flex justify-between px-4 py-2 border-b border-gray-700"
       >
-        <Icon name="trash" size="sm"></Icon>
-      </button>
+        <div class="text-lg mx-2">
+          <div
+            class="cursor-pointer hover:text-blue-500"
+            :class="{ 'text-green-500': selectedList.id === list.id }"
+            @click="selectList(list)"
+          >
+            {{ list.name }}
+          </div>
+
+          <div class="text-sm text-gray-600">
+            {{
+              `${list.tasks.filter((t) => t.isDone).length}/${
+                list.tasks.length
+              }`
+            }}
+          </div>
+        </div>
+        <button
+          class="flex cursor-pointer hover:text-red-500"
+          @click="$emit('remove', list)"
+        >
+          <Icon name="trash" size="sm"></Icon>
+        </button>
+      </div>
     </div>
     <AddItemInput
-      class="mt-2 p-2 border-t border-gray-800"
+      class="px-4 py-2"
       @new="$emit('new', $event)"
       placeholder="Nova lista"
     />
@@ -81,7 +88,9 @@ export default {
     let popperInstance = null
 
     onMounted(() => {
-      popperInstance = createPopper(inputRef.value, dropdownRef.value, {})
+      popperInstance = createPopper(inputRef.value, dropdownRef.value, {
+        placement: 'auto-start',
+      })
     })
 
     return {
