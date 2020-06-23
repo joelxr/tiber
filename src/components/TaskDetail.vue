@@ -4,17 +4,21 @@
       <input
         type="text"
         class="block appearance-none leading-tight bg-gray-900 text-3xl font-semibold focus:outline-none w-full m-0 px-4 py-2"
-        v-model="task.description"
+        :value="task.description"
+        @input="update({ description: $event.target.value })"
       />
     </template>
 
     <template #content>
       <div class="flex justify-between mx-4 mb-2">
-        <DateInput :value="task.dueDate" @update="task.dueDate = $event" />
+        <DateInput
+          :value="task.dueDate"
+          @update="update({ dueDate: $event })"
+        />
         <button
           type="button"
           class="flex text-gray-500 hover:text-red-500 mr-2"
-          @click="$emit('remove', item)"
+          @click="$emit('remove', task)"
         >
           <Icon name="trash" class="mr-2" /> EXCLUIR
         </button>
@@ -35,7 +39,11 @@
       <div class="h-full mx-2">
         <div v-if="state.activeTab === 'Etapas'">
           <div v-for="(item, index) in task.items" :key="index" class="flex">
-            <TaskDetailItem :item="item" @remove="removeItem" />
+            <TaskDetailItem
+              :item="item"
+              @update="updateItem"
+              @remove="removeItem"
+            />
           </div>
 
           <AddItemInput
@@ -49,7 +57,7 @@
           class="flex flex-col h-full"
           v-else-if="state.activeTab === 'Anotações'"
         >
-          <TaskNotes :task="task" />
+          <TaskNotes :task="task" @update="update" />
         </div>
       </div>
     </template>
@@ -58,7 +66,7 @@
 
 <script>
 import { reactive } from 'vue'
-import { v4 as uuidv4 } from 'uuid'
+import * as taskItemService from '../service/idb/taskItem.service'
 import LeftSidePanel from './LeftSidePanel.vue'
 import TaskDetailItem from './TaskDetailItem.vue'
 import AddItemInput from './AddItemInput.vue'
@@ -81,23 +89,56 @@ export default {
       required: true,
     },
   },
-  setup(props, context, a) {
+  setup(props, context) {
     const state = reactive({
       activeTab: 'Etapas',
       tabs: ['Etapas', 'Anotações'],
     })
 
+    function update(task) {
+      context.emit('update', { ...task })
+    }
+
     function newItem(event) {
-      props.task.items.push({ id: uuidv4(), description: event, isDone: false })
+      const item = { description: event, isDone: false, taskId: props.task.id }
+
+      return new Promise((resolve, reject) => {
+        return taskItemService.put(item).then((id) => {
+          item.id = id
+          update({
+            items: [...props.task.items, item],
+          })
+
+          resolve(id)
+        })
+      })
+    }
+
+    function updateItem(item) {
+      return taskItemService.put(item).then((id) => {
+        update({
+          items: [...props.task.items],
+        })
+      })
     }
 
     function removeItem(event) {
-      context.emit('removeItem', { task: props.task, removedItem: event })
+      const index = props.task.items.findIndex((i) => event.id === i.id)
+
+      if (~index) {
+        taskItemService.remove(event.id).then(() => {
+          update({
+            items: [...props.task.items.filter((i) => event.id === i.id)],
+          })
+        })
+      }
     }
 
     return {
       state,
+      update,
       newItem,
+      updateItem,
       removeItem,
     }
   },

@@ -67,7 +67,7 @@
 
 <script>
 import { reactive, computed, onMounted, ref } from 'vue'
-import { format, addDays, parse } from 'date-fns'
+import { format, addDays, parse, differenceInCalendarDays } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
 import { createPopper } from '@popperjs/core'
 
@@ -109,7 +109,6 @@ export default {
         context.emit('update', new Date())
       } else if (event === 'tomorrow') {
         state.dropdownOption = event
-
         context.emit('update', addDays(new Date(), 1))
       } else if (event === 'nextWeek') {
         state.dropdownOption = event
@@ -128,6 +127,21 @@ export default {
 
     onMounted(() => {
       popperInstance = createPopper(inputRef.value, dropdownRef.value, {})
+
+      if (props.value.getDate()) {
+        const diffInDays = differenceInCalendarDays(props.value, new Date())
+
+        if (diffInDays === 0) {
+          state.dropdownOption = 'today'
+        } else if (diffInDays === 1) {
+          state.dropdownOption = 'tomorrow'
+        } else if (diffInDays === 7) {
+          state.dropdownOption = 'nextWeek'
+        } else if (diffInDays > 7 || diffInDays < 0) {
+          state.dropdownOption = 'custom'
+          dateInput.set(state.formatedValue)
+        }
+      }
     })
 
     return {

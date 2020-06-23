@@ -1,10 +1,16 @@
 <template>
   <div class="flex items-center w-full px-4 py-2 my-1">
-    <input type="checkbox" class="mr-4" v-model="item.isDone" />
+    <input
+      type="checkbox"
+      class="mr-4"
+      v-model="item.isDone"
+      @click="$emit('update', { ...item, isDone: $event.target.checked })"
+    />
     <input
       type="text"
       class="block appearance-none leading-tight bg-gray-900 focus:outline-none w-full"
-      v-model="item.description"
+      :value="item.description"
+      @input="$emit('update', { ...item, description: $event.target.value })"
     />
     <button
       type="button"

@@ -21,15 +21,18 @@
       </div>
     </div>
 
-    <p class="mt-1 mx-2" v-if="task.items.length">
+    <p class="mt-1 mx-2" v-if="task.items && task.items.length">
       {{ task.items.filter((i) => i.isDone).length }}/{{ task.items.length }}
+    </p>
+    <p class="mt-1 mx-2" v-else>
+      0/0
     </p>
 
     <button
       type="button"
       class="text-gray-500 hover:text-blue-500 mr-2"
       :class="{ 'text-blue-500': !!isDetailOpened }"
-      @click="$emit('edit', task)"
+      @click="$emit('select', task)"
       title="Especificar"
     >
       <Icon name="checklist" />

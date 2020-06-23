@@ -11,7 +11,7 @@
           "
           @remove="$emit('remove', task)"
           @done="$emit('done', task)"
-          @edit="editTask"
+          @select="selectTask"
         />
       </li>
     </ul>
@@ -19,7 +19,7 @@
 </template>
 
 <script>
-import TaskListItem from '../components/TaskIListItem.vue'
+import TaskListItem from '../components/TaskListItem.vue'
 import { reactive } from 'vue'
 export default {
   components: { TaskListItem },
@@ -34,14 +34,14 @@ export default {
       taskDetailOpened: null,
     })
 
-    function editTask(task) {
-      context.emit('edit', task)
+    function selectTask(task) {
+      context.emit('select', task)
       state.taskDetailOpened = task
     }
 
     return {
       state,
-      editTask,
+      selectTask,
     }
   },
 }

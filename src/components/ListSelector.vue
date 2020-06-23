@@ -6,9 +6,9 @@
   >
     <Icon name="notes" />
     <input
-      class="flex-grow-1 bg-gray-900 text-gray-600 hover:text-blue-600 text-3xl font-black mx-4 py-2"
+      class="flex-grow-1 bg-gray-900 text-gray-600 hover:text-blue-600 text-3xl font-black mx-4 py-2 outline-none"
       :value="selectedList.name"
-      @input="selectedList.name = $event.target.value"
+      @input="updateList"
       @click="isDropdownVisible = !isDropdownVisible"
     />
   </div>
@@ -33,7 +33,7 @@
             {{ list.name }}
           </div>
 
-          <div class="text-sm text-gray-600">
+          <div v-if="list.tasks" class="text-sm text-gray-600">
             {{
               `${list.tasks.filter((t) => t.isDone).length}/${
                 list.tasks.length
@@ -42,7 +42,7 @@
           </div>
         </div>
         <button
-          class="flex cursor-pointer hover:text-red-500"
+          class="flex cursor-pointer hover:text-red-500 outline-none"
           @click="$emit('remove', list)"
         >
           <Icon name="trash" size="sm"></Icon>
@@ -105,6 +105,12 @@ export default {
         context.emit('select', list)
         dropdown.toggle()
         popperInstance.update()
+      },
+      updateList: (event) => {
+        context.emit('update', {
+          ...props.selectedList,
+          name: event.target.value,
+        })
       },
     }
   },

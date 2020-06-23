@@ -11,7 +11,8 @@
     v-if="state.edit"
     class="w-full flex-grow m-0 py-1 px-4 bg-gray-900 font-mono focus:outline-none"
     style="resize: none;"
-    v-model="task.note"
+    :value="task.note"
+    @input="update({ note: $event.target.value })"
     placeholder="Insira suas anotações aqui"
     @keypress.ctrl.enter.exact="state.edit = false"
   >
@@ -86,8 +87,13 @@ export default {
       state.edit = !props.task.note
     })
 
+    function update(task) {
+      context.emit('update', { ...task })
+    }
+
     return {
       state,
+      update,
     }
   },
 }
