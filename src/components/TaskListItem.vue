@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex items-center bg-gray-800 rounded shadow mx-4 my-2 p-2 border border-transparent hover:border-gray-700"
+    class="flex items-center bg-gray-800 rounded shadow my-2 p-2 border border-transparent hover:border-gray-700"
   >
     <input class="mx-2" type="checkbox" @click="$emit('done')" />
     <div class="mx-2 flex-grow">

@@ -2,10 +2,11 @@
   "name": "tiber",
   "version": "1.0.0",
   "description": "An ever evolving taking notes app",
-  "main": "index.js",
+  "main": "src/electron.js",
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --config config/webpack.dev.js",
-    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.js"
+    "build": "cross-env NODE_ENV=production webpack --config config/webpack.prod.js",
+    "electron": "cross-env NODE_ENV=production webpack --config config/webpack.prod.js; electron ."
   },
   "author": "Joel Rocha <joelxr@gmail.com>",
   "license": "MIT",
@@ -33,6 +34,7 @@
     "copy-webpack-plugin": "6.0.x",
     "cross-env": "7.0.x",
     "css-loader": "3.5.x",
+    "electron": "9.0.x",
     "eslint": "7.0.x",
     "eslint-config-prettier": "6.11.x",
     "eslint-config-standard": "14.1.x",
