@@ -5,7 +5,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin
 
 module.exports = {
-  entry: [paths.src + '/main.js'],
+  entry: [paths.src + '/main.ts'],
   output: {
     path: paths.build,
     filename: '[name].bundle.js',
@@ -35,6 +35,13 @@ module.exports = {
         exclude: /node_modules/,
         use: ['vue-loader'],
         include: paths.src,
+      },
+      {
+        test: /\.ts$/,
+        loader: "ts-loader",
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        }
       },
       {
         test: /\.js$/,

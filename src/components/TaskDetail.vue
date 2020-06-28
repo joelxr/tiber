@@ -66,7 +66,7 @@
 
 <script>
 import { reactive } from 'vue'
-import * as taskItemService from '../service/idb/taskItem.service'
+import * as taskItemService from '../service/idb/taskItem.service.ts'
 import LeftSidePanel from './LeftSidePanel.vue'
 import TaskDetailItem from './TaskDetailItem.vue'
 import AddItemInput from './AddItemInput.vue'

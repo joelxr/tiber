@@ -29,19 +29,25 @@
   </div>
 </template>
 
-<script>
-import { reactive, onMounted } from 'vue'
+<script lang="ts">
+import { defineComponent, reactive, onMounted } from 'vue'
 
-import * as listService from './service/idb/list.service'
-import * as taskService from './service/idb/task.service'
-import * as taskItemService from './service/idb/taskItem.service'
+import * as listService from './service/idb/list.service.ts'
+import * as taskService from './service/idb/task.service.ts'
+import * as taskItemService from './service/idb/taskItem.service.ts'
 
 import ListSelector from './components/ListSelector.vue'
 import TaskList from './views/TaskList.vue'
 import TaskForm from './components/TaskForm.vue'
 import TaskDetail from './components/TaskDetail.vue'
 
-export default {
+interface AppState {
+  lists: Array<TaskList>
+  selectedTask?: Task
+  selectedList: TaskList
+}
+
+export default defineComponent({
   components: {
     ListSelector,
     TaskList,
@@ -49,38 +55,41 @@ export default {
     TaskForm,
   },
   setup() {
-    const state = reactive({
+    const state: AppState = reactive({
       lists: [],
-      selectedTask: null,
-      selectedList: { name: '' },
+      selectedTask: undefined,
+      selectedList: { name: '', tasks: [] },
     })
 
-    function addTask(task) {
-      const t = {
+    function addTask(task: Task): Promise<boolean> {
+      const t: Task = {
         description: task.description,
         createdDate: new Date(),
         dueDate: task.dueDate,
-        doneDate: '',
         isDone: false,
-        note: '',
         listId: state.selectedList.id,
       }
 
       return new Promise((resolve, reject) => {
         return taskService.put(t).then((id) => {
-          if (!state.selectedList.tasks)
-            state.selectedList.tasks = [{ ...t, id }]
-          else state.selectedList.tasks.push({ ...t, id })
+          if (!state.selectedList.tasks) {
+            state.selectedList.tasks = [{ ...t, id: id.toString() }]
+          } else {
+            state.selectedList.tasks.push({ ...t, id: id.toString() })
+          }
+          return true
         })
       })
     }
 
-    function updateTask(task) {
+    function updateTask(task: Task): Promise<string> {
+      if (!state.selectedTask) return Promise.resolve('')
+
       Object.keys(task).map((p) => {
-        state.selectedTask[p] = task[p]
+        if (state.selectedTask) state.selectedTask[p] = task[p]
       })
 
-      const t = {
+      const t: Task = {
         id: state.selectedTask.id,
         listId: state.selectedTask.listId,
         description: state.selectedTask.description,
@@ -91,35 +100,37 @@ export default {
         note: state.selectedTask.note,
       }
 
-      return taskService.put(t)
+      return taskService.put(t).then((id) => id.toString())
     }
 
-    function removeTask(task) {
+    function removeTask(task: Task): void {
+      if (!task.id) return
+
       const index = state.selectedList.tasks.findIndex((t) => t.id === task.id)
 
       if (~index) {
         taskService.remove(task.id).then(() => {
           state.selectedList.tasks.splice(index, 1)
 
-          if (task.id === state.selectedTask.id) {
-            state.selectedTask = null
+          if (state.selectedTask && task.id === state.selectedTask.id) {
+            state.selectedTask = undefined
           }
         })
       }
     }
 
-    function selectTask(task) {
+    function selectTask(task: Task): void {
       state.selectedTask = task
       taskItemService.list(task.id).then((items) => (task.items = items || {}))
     }
 
-    function doneTask(task) {
+    function doneTask(task: Task): void {
       task.isDone = !task.isDone
-      task.doneDate = task.isDone ? new Date() : null
+      task.doneDate = task.isDone ? new Date() : undefined
       updateTask(task)
     }
 
-    function loadList() {
+    function loadList(): Promise<Array<TaskList>> {
       return new Promise((resolve, reject) => {
         return listService.list().then((lists) => {
           state.lists = lists
@@ -128,35 +139,41 @@ export default {
       })
     }
 
-    function addList(name) {
+    function addList(name: string): Promise<string> {
       return new Promise((resolve, reject) => {
-        return listService.put({ name }).then((id) => {
-          state.lists.push({ id, name, tasks: [] })
-          resolve(id)
+        return listService.put({ name, tasks: [] }).then((id) => {
+          state.lists.push({ id: id.toString(), name, tasks: [] })
+          resolve(id.toString())
         })
       })
     }
 
-    function updateList({ id, name }) {
+    function updateList({ id, name, tasks = [] }: TaskList) {
       return new Promise((resolve, reject) =>
-        listService.put({ id, name }).then((id) => {
+        listService.put({ id, name, tasks }).then((id) => {
           const list = state.lists.find((l) => l.id === id)
-          list.name = name
-          resolve(list)
+          if (list) {
+            list.name = name
+            resolve(list)
+          } else {
+            resolve(null)
+          }
         })
       )
     }
 
-    function removeList(event) {
-      const removingSelected = state.selectedList.id === event.id
+    function removeList(list: TaskList): void {
+      if (!list.id) return
+
+      const removingSelected = state.selectedList.id === list.id
       const oneRemaining = state.lists.length === 1
 
       if (removingSelected && oneRemaining) return
 
-      const index = state.lists.findIndex((i) => event.id === i.id)
+      const index = state.lists.findIndex((i) => list.id === i.id)
 
       if (~index) {
-        listService.remove(event.id).then(() => {
+        listService.remove(list.id.toString()).then(() => {
           state.lists.splice(index, 1)
 
           if (removingSelected) {
@@ -166,8 +183,8 @@ export default {
       }
     }
 
-    function selectList(list) {
-      if (!list) return
+    function selectList(list: TaskList): void {
+      if (!list || !list.id) return
       state.selectedList = list
       taskService.list(list.id).then((tasks) => (list.tasks = tasks || {}))
     }
@@ -176,7 +193,8 @@ export default {
       loadList().then((lists) => {
         if (!lists.length) {
           addList('Para hoje').then((id) => {
-            selectList(state.lists.find((l) => l.id === id))
+            const list = state.lists.find((l) => l.id === id)
+            if (list) selectList(list)
           })
         }
 
@@ -197,5 +215,5 @@ export default {
       selectList,
     }
   },
-}
+})
 </script>
