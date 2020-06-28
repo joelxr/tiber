@@ -149,7 +149,9 @@ export default {
       updateValue,
       toggleDropdown: () => {
         dropdown.toggle()
-        popperInstance.update()
+        if (popperInstance) {
+          popperInstance.update()
+        }
       },
       isDropdownVisible: dropdown.isVisible,
       customDate: dateInput.value,

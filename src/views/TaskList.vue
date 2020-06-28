@@ -18,9 +18,14 @@
   </div>
 </template>
 
-<script>
-import TaskListItem from '../components/TaskListItem.vue'
+<script lang="ts">
 import { reactive } from 'vue'
+import TaskListItem from '../components/TaskListItem.vue'
+
+interface TaskListState {
+  taskDetailOpened?: Task
+}
+
 export default {
   components: { TaskListItem },
   props: {
@@ -30,11 +35,11 @@ export default {
     },
   },
   setup(props, context) {
-    const state = reactive({
-      taskDetailOpened: null,
+    const state: TaskListState = reactive({
+      taskDetailOpened: undefined,
     })
 
-    function selectTask(task) {
+    function selectTask(task: Task) {
       context.emit('select', task)
       state.taskDetailOpened = task
     }

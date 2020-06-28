@@ -67,12 +67,12 @@
 <script>
 import { reactive } from 'vue'
 import * as taskItemService from '../service/idb/taskItem.service'
-import LeftSidePanel from './LeftSidePanel.vue'
-import TaskDetailItem from './TaskDetailItem.vue'
-import AddItemInput from './AddItemInput.vue'
-import TaskNotes from './TaskNotes.vue'
-import DateInput from './DateInput.vue'
-import Icon from './Icon.vue'
+import LeftSidePanel from './LeftSidePanel'
+import TaskDetailItem from './TaskDetailItem'
+import AddItemInput from './AddItemInput'
+import TaskNotes from './TaskNotes'
+import DateInput from './DateInput'
+import Icon from './Icon'
 
 export default {
   components: {

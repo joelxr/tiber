@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import Icon from './Icon.vue'
-import DateInput from './DateInput.vue'
+import Icon from './Icon'
+import DateInput from './DateInput'
 import { reactive } from 'vue'
 export default {
   components: {

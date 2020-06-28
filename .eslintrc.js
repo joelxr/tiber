@@ -6,9 +6,11 @@ module.exports = {
   extends: [
     'plugin:vue/vue3-strongly-recommended',
     'standard',
+    '@vue/typescript',
     'prettier',
     'prettier/standard',
     'prettier/vue',
+    'prettier/@typescript-eslint',
   ],
   globals: {
     Atomics: 'readonly',
@@ -18,6 +20,6 @@ module.exports = {
     ecmaVersion: 11,
     sourceType: 'module',
   },
-  plugins: ['vue'],
+  plugins: ['vue', '@typescript-eslint'],
   rules: {},
 }

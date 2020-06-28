@@ -32,7 +32,7 @@ import MarkdownIt from 'markdown-it'
 import markdownItEmoji from 'markdown-it-emoji'
 import markdownItContainer from 'markdown-it-container'
 import hljs from 'highlight.js'
-import ToggleInput from './ToggleInput.vue'
+import ToggleInput from './ToggleInput'
 
 import 'highlight.js/styles/tomorrow-night-eighties.css'
 

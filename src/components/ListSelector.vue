@@ -61,8 +61,8 @@
 import { ref, onMounted } from 'vue'
 import { createPopper } from '@popperjs/core'
 import useDropdown from '../composables/useDropdown'
-import Icon from './Icon.vue'
-import AddItemInput from './AddItemInput.vue'
+import Icon from './Icon'
+import AddItemInput from './AddItemInput'
 
 export default {
   components: {
@@ -116,5 +116,3 @@ export default {
   },
 }
 </script>
-
-<style></style>

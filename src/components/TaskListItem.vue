@@ -57,7 +57,7 @@ import {
   differenceInCalendarDays,
 } from 'date-fns'
 import ptBR from 'date-fns/locale/pt-BR'
-import Icon from './Icon.vue'
+import Icon from './Icon'
 
 export default {
   components: { Icon },
