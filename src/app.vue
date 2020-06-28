@@ -68,6 +68,7 @@ export default defineComponent({
         dueDate: task.dueDate,
         isDone: false,
         listId: state.selectedList.id,
+        note: '',
       }
 
       return new Promise((resolve, reject) => {

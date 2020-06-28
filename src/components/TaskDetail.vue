@@ -90,6 +90,8 @@ export default {
     },
   },
   setup(props, context) {
+    console.log(props.task)
+
     const state = reactive({
       activeTab: 'Etapas',
       tabs: ['Etapas', 'Anotações'],
