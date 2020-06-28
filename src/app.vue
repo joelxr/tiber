@@ -32,9 +32,9 @@
 <script lang="ts">
 import { defineComponent, reactive, onMounted } from 'vue'
 
-import * as listService from './service/idb/list.service.ts'
-import * as taskService from './service/idb/task.service.ts'
-import * as taskItemService from './service/idb/taskItem.service.ts'
+import * as listService from './service/idb/list.service'
+import * as taskService from './service/idb/task.service'
+import * as taskItemService from './service/idb/taskItem.service'
 
 import ListSelector from './components/ListSelector.vue'
 import TaskList from './views/TaskList.vue'

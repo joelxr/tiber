@@ -1,4 +1,4 @@
-import { dbPromise, Collections, Indexes } from './utils.ts'
+import { dbPromise, Collections, Indexes } from './utils'
 
 export const list = (taskId) =>
   dbPromise().then((db) =>

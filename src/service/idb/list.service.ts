@@ -1,4 +1,4 @@
-import { dbPromise, Collections } from './utils.ts'
+import { dbPromise, Collections } from './utils'
 
 export const list = () => dbPromise().then((db) => db.getAll(Collections.Lists))
 export const get = (id: string) =>

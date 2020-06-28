@@ -28,20 +28,23 @@ module.exports = {
       filename: 'index.html',
     }),
   ],
+  resolve: {
+    extensions: ['.vue', '.ts', '.js', '.json'],
+  },
   module: {
     rules: [
+      {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+        options: {
+          appendTsSuffixTo: [/\.vue$/],
+        },
+      },
       {
         test: /\.vue$/,
         exclude: /node_modules/,
         use: ['vue-loader'],
         include: paths.src,
-      },
-      {
-        test: /\.ts$/,
-        loader: "ts-loader",
-        options: {
-          appendTsSuffixTo: [/\.vue$/],
-        }
       },
       {
         test: /\.js$/,
