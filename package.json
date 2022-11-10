@@ -37,7 +37,7 @@
     "copy-webpack-plugin": "6.0.x",
     "cross-env": "7.0.x",
     "css-loader": "3.5.x",
-    "electron": "9.0.x",
+    "electron": "18.3.x",
     "eslint": "7.0.x",
     "eslint-config-prettier": "6.11.x",
     "eslint-config-standard": "14.1.x",
